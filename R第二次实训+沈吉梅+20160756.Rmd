@@ -1,0 +1,82 @@
+---
+title: "R Notebook"
+output: html_notebook
+---
+
+This is an [R Markdown](http://rmarkdown.rstudio.com) Notebook. When you execute code within the notebook, the results appear beneath the code. 
+
+Try executing this chunk by clicking the *Run* button within the chunk or by placing your cursor inside it and pressing *Ctrl+Shift+Enter*. 
+
+```{r}
+# Read item_feature1.csv and store it in df; and name the df columns: date, item_id, cate_id, cate_level_id, brand_id, supplier_id, pv_ipv, cart_uv, collect_uv, and cart_ipv
+df <- read.csv("C:/Users/Jimei/Desktop/item_feature1.csv")
+names(df) <- c("date","item_id","cate_id","cate_level_id","brand_id","supplier_id","pv_ipv","cart_uv","collect_uv","cart_ipv")
+df
+
+# Recode the cart_uv in df and name the new variable recode, classify less than 5000 as less, classify greater than or equal to 5000 to less than 15000 as common, and others as many; view 10 data at the end.
+df <-  within(df,{recode <- NA
+     recode[cart_uv < 5000] <- "less" 
+     recode[cart_uv >= 5000 & cart_uv <= 15000] <- "common" 
+     recode[cart_uv > 15000] <- "many" })
+tail(df$recode,10)
+
+# Check if there are missing values in df; if there are missing values, delete all rows with missing values in df.
+is.na(df)
+df <- na.omit(df)
+
+# Convert the date field in df to a date type, such as: 2015-02-13.
+df$date<-as.character(df$date)
+df$date<-as.Date(df$date,"%Y%m%d")
+df$date
+
+# Sort df in ascending order of date field, save as df_asc; and view the first 10 data.
+df_asc <- df[order(df$date),]
+head(df_asc,10)
+
+# Df is sorted in ascending order of date field and descending order of item_id, and there is another df1; and the first 5 pieces of data are viewed.
+df1 <- df[order(df$date, -df$item_id),]
+head(df1,5)
+
+# Select the date, item_id, cate_id, cart_uv, recode, collect_uv, and cart_ipv fields from df as df1; discard the cart_ipv field in df1 as df2; select df1 from the data with item_id greater than 500 and recode as less as df3.
+library(sqldf)
+df1 <- sqldf("select date,item_id,cate_id,cart_uv,recode,collect_uv,cart_ipv from df")
+df1
+df2 <- df1[,-7]
+df2
+df3 <- sqldf("select item_id,recode from df1 where item_id > 500 and recode == 'less'")
+df3
+df_sub <- subset(df,date=="2015-02-14" & item_id==300,selet=date:supplier_id)
+df_sub
+
+# Randomly extract 500 samples from df without saving them, save as df4; view the dimensions of the sample and the head data of the data
+df4<-df[sample(1:nrow(df),500,replace = FALSE),]
+dim(df4)
+head(df4)
+
+# The data from item_id to cate_id is selected from df1, saved as df1_temp, and then combined with df according to item_id and stored as df5.
+df_temp<-subset(df,select = item_id:cate_id)
+df_temp# df5<-merge(df,df_temp,by="item_id") Because overflow cannot be done
+
+# From df1, use sql method to select data with item_id of 300, and save it as df6. [Note: sqldf package]
+df6 <- sqldf("select * from df1 where item_id=300 ")
+df6
+
+# From the df2, there are as many data strips as df6 as df_tem, and then merged with df6 by column (horizontal), and saved as df7.
+df_tem<-df2[sample(1:nrow(df2),nrow(df6),replace=TRUE),]
+df_tem
+df7<-cbind(df_tem,df6)
+df7
+
+# Select date, item_id, cate_id, and cart_ipv from df as feature, and arrange the features in ascending order by date, and take out the unique cate_id in the feature.
+feature<-subset(df,select = c(date,item_id,cate_id,cart_ipv))
+feature
+feature<-feature[order(feature$date),]
+feature
+unique(feature$cate_id)
+```
+
+Add a new chunk by clicking the *Insert Chunk* button on the toolbar or by pressing *Ctrl+Alt+I*.
+
+When you save the notebook, an HTML file containing the code and output will be saved alongside it (click the *Preview* button or press *Ctrl+Shift+K* to preview the HTML file).
+
+The preview shows you a rendered HTML copy of the contents of the editor. Consequently, unlike *Knit*, *Preview* does not run any R code chunks. Instead, the output of the chunk when it was last run in the editor is displayed.
