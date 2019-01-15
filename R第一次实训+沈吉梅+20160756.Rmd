@@ -1,0 +1,121 @@
+---
+title: "R Notebook"
+output: html_notebook
+---
+
+This is an [R Markdown](http://rmarkdown.rstudio.com) Notebook. When you execute code within the notebook, the results appear beneath the code. 
+
+Try executing this chunk by clicking the *Run* button within the chunk or by placing your cursor inside it and pressing *Ctrl+Shift+Enter*. 
+
+```{r}
+#Create a vector with value from 1 to 10, interval of 2, and name after A
+A <- seq(1,10,2)
+A
+# A <- c(1,3,5,7,9)
+
+#Write  numbers 1 to 12 three times for each iteration into the vector B: (1,1,1,...,12,12,12) Prompt rep
+B <- rep(seq(1,12),each=3)
+B
+
+#Output the length of the B vector and the vector value after deduplication
+length(B)
+B <- B[!duplicated(B)] 
+#B <- unique(B)
+
+#Output intersection of A and B, union C, difference set
+intersect(A,B)
+C <- union(A,B)
+C
+setdiff(A,B) #A-B
+setdiff(B,A) #B-A
+
+#Sort collection C in descending order
+sort(C,decreasing = TRUE)
+#rank(C,decreasing = TRUE)
+#order(C,decreasing = TRUE)
+
+#Select the 3rd element of C; the 4th to the last element; the element whose value is greater than or equal to 3 and less than 7
+C[3]
+C[4:length(C)]
+C[C>=3 & C<7]
+
+#convert the numeric vector C into character type
+C <- as.character(C)
+C
+
+#The length, maximum and index of the vector C
+which(C==max(C),arr.ind=TRUE)
+
+#Convert A to array type variable named a, view the type of a
+a <- as.array(A)
+a
+mode(a)
+
+#Two 1*20 matrices are used to form two 4*5 matrices, where M1 is input by column, M2 is input by row, and M3 is calculated as M1+M2; and M4 is constructed, which is composed of M3 columns, but does not include the first 3 columns.
+M1<-matrix(1:20,nrow=4,ncol=5,byrow=FALSE)
+M1
+M2<-matrix(1:20,nrow=4,ncol=5,byrow=TRUE)
+M2
+M3 <- M1+M2
+M3
+M4 <- M3[,-3]
+M4
+
+#Use number from 1 to 9 to form a 3*3 matrix M5 input by column; find the diagonal matrix M6 of M5; calculate the matrix multiplication of M5 and M6 to obtain M7; find the transposed matrix M8 of M7
+M5<-matrix(1:9,nrow=3,ncol=3,byrow=FALSE)
+M5
+M6 <- diag(M5)
+M6
+M7 <- M5%*%M6
+M7
+M8 <- t(M7)
+M8
+
+#Use a number from 1 to 12 to form a 4*3 matrix M9 input by column, find the sum of the columns of M9; find the row average of M9
+M9<-matrix(1:12,nrow=4,ncol=3,byrow=FALSE)
+M9
+colSums(M9)
+rowMeans(M9)
+
+#Read the algae dataset from the csv file and assign it to algae1
+algae1 <- read.csv ("C:/Users/Jimei/Desktop/algae.csv")
+
+#View the top 10 data for algae1
+algae1[1:10,]
+
+#Output the basic statistics of algae1, the dimensions of the data, the feature name, and the data types of the columns of season, size, and NO3.
+attributes(algae1)
+dim(algae1)
+class(algae1$season)
+class(algae1$size)
+class(algae1$NO3)
+
+#Define the sample selected for the summer season as newalgael, and the number of newalgael samples is output.
+newalgael <- algae1[which(algae1$season == "summer"),] 
+nrow(newalgael)
+
+#The missing value in the column cl of newalgael is filled with the median of this column
+library(Hmisc)
+impute(newalgael$Cl,median)
+
+#Delete algale1 with samples with missing values, output the number of rows of the original sample and the number of remaining samples
+algae_1 <- na.omit(algae1)
+nrow(algae1)
+nrow(algae_1)
+
+#Edit algae1 and save as algae2 (arbitrarily modify the value of a point)
+algae1$season[1] <- "summer"
+algae2 <- algae1
+
+#Combine algae1 and algae2, get algale3 by row, and output sample rows of algae1, algae2, and algae3
+algae3 <- rbind(algae1,algae2)
+nrow(algae1)
+nrow(algae2)
+nrow(algae3)
+```
+
+Add a new chunk by clicking the *Insert Chunk* button on the toolbar or by pressing *Ctrl+Alt+I*.
+
+When you save the notebook, an HTML file containing the code and output will be saved alongside it (click the *Preview* button or press *Ctrl+Shift+K* to preview the HTML file).
+
+The preview shows you a rendered HTML copy of the contents of the editor. Consequently, unlike *Knit*, *Preview* does not run any R code chunks. Instead, the output of the chunk when it was last run in the editor is displayed.
