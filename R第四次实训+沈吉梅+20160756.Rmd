@@ -1,0 +1,124 @@
+---
+title: "R Notebook"
+output: html_notebook
+---
+
+This is an [R Markdown](http://rmarkdown.rstudio.com) Notebook. When you execute code within the notebook, the results appear beneath the code. 
+
+Try executing this chunk by clicking the *Run* button within the chunk or by placing your cursor inside it and pressing *Ctrl+Shift+Enter*. 
+
+```{r}
+# Save the data to df by reading "hospital-data.csv", get the number of the data; view the first 5 data in the data
+df<-read.csv("C:/Users/Jimei/Desktop/hospital-data.csv")
+nrow(df)
+head(df,5)
+head(df,5)
+
+# View the data overview; find the scope of the zip code
+summary(df)
+range(df$ZIP.Code)
+
+# Our default phone number is a numeric value, which has no practical meaning; the sapply function is used to return the maximum, minimum, mean, median, standard deviation and variance of the phone number by calling the user-defined function
+myfun1<-function(x,na.omit=FALSE){
+  if(na.omit)
+    x<-x[!is.na(x)]
+  x_max<-max(x)
+  x_min<-min(x)
+  x_mean<-mean(x)
+  x_median<-median(x)
+  x_sd<-sd(x)
+  x_var<-var(x)
+  return(c(max=x_max,min=x_min,mean=x_mean,median=x_median,sd=x_sd,var=x_var))
+}
+sapply(df[c("Phone.Number")], myfun1,na.omit=TRUE)
+
+# Use aggregate to find the median number of each state's phone number
+aggregate(df$Phone.Number,by=list(State=df$State),median)
+
+# Use by to find the maximum and minimum values of the phone numbers of each city; display the first 3 data of the results
+myfun2<-function(x,na.omit=FALSE){
+  if(na.omit)
+    x<-x[!is.na(x)]
+  x_max<-max(x)
+  x_min<-min(x)
+  return(c(max=x_max,min=x_min))
+}
+findby<-by(df$Phone.Number,df$City,myfun2)
+head(findby,3)
+
+# Generate a simple frequency statistics table for the state; and convert this frequency table into a scale value
+mytable<-with(df,table(State))
+prop.table(mytable)
+
+# Create a two-dimensional contingency table of the state and hospital type, named mycontable; generate margins by column
+mycontable<-table(df$State,df$Hospital.Type)
+mycontable
+margin.table(mycontable,2)
+
+# Use CrossTable to create a two-dimensional contingency table of the township and whether to provide the emergency service field, named mycrosstable. (Note: Install the gmodels package)
+library(gmodels)
+mycrosstable<-CrossTable(df$County,df$Emergency.Services,expected=FALSE, prop.r=FALSE, prop.c=FALSE,prop.t=FALSE, prop.chisq=FALSE, chisq = FALSE)
+
+# The data is saved in the death by reading the file death rate.csv, and the independence between the age and the male living population (secondary contingency table) is checked by the chi-square test
+death<-read.csv("C:/Users/Jimei/Desktop/death rate.csv")
+library(vcd)
+table1 <- xtabs(~Age+Male_Exp,data=death)
+chisq.test(table1)
+# p-value is ***, there exists a significant correlation between the age and the male living population
+
+# Correlation between age and male mortality (secondary contingency table) is measured by the assocstats function)
+library(vcd)
+table2 <- xtabs(~Age+q_male,data=death)
+assocstats(table2)
+
+# Calculate the Pearson and Spearman correlation coefficients between age and male mortality; and the covariance of all variables in the death
+death<-na.omit(death)
+death1<-death[c("Age","q_male")]
+cor(death1,method = "pearson")
+cor(death1,method = "spearman")
+cov(death)
+
+# Exploring the significance of the correlation between the number of female survivors and the number of male survivors
+cor.test(death$Female_Exp,death$Male_Exp)
+
+# The data is saved to care_df by reading the file outcome-of-care-measures.csv. By writing a function called best, the best hospital in the state is found. The function has two parameters, one has two letters. The abbreviated state name, and the other is the result name, including (heart attack, heart failure, pneumonia), and the function returns the hospital name with the lowest 30-day mortality rate. When dealing with rankings, if the mortality rate is equal, the hospitals are sorted alphabetically, taking the first hospital
+# Pay attention to checking the type of data read in order to avoid problems when sorting!!
+# Demo is as follows
+# best <- function(state, outcome) { ##code }
+# The function checks the validity of the input variable. If an invalid state name is entered, the function should stop the program and prompt "invalid state". Also, when the input evaluate parameter is incorrect, it should prompt "invalid outcome"
+# Function check:
+# best("TX", "heart failure") best(“MD”, “heart attack”)  best("MD", "pneumonia") best("BB", "heart attack") best("NY", "hert attack")
+care_df<-read.csv("C:/Users/Jimei/Desktop/outcome-of-care-measures.csv")
+names(care_df)[11]<-"heart attack"
+names(care_df)[17]<-"heart failure"
+names(care_df)[23]<-"pneumonia"
+outcomes<-c("heart attack","heart failure","pneumonia")
+best<-function(state, outcome){
+  if(state %in% care_df$State){
+    if(outcome %in% outcomes){
+      care_df2<-care_df[care_df$State==state,]
+      care_df3<-care_df2[c("Hospital.Name",outcome)]
+      care_df4<-care_df3[care_df3[2]!="Not Available",]
+      care_df4[2]<-as.numeric(as.character(care_df4[,2]))
+      care_df5<-care_df4[order(care_df4[2],care_df4[1]),]
+      as.character(care_df5[,1])[1]
+    }else{
+      print("invalid outcome")
+    }
+  }else{
+    print("invalid state")
+  }
+}
+best("TX", "heart failure")
+best("MD", "heart attack")
+best("MD", "pneumonia ")
+best("BB", "heart attack")
+best("NY", "hert attack")
+
+```
+
+Add a new chunk by clicking the *Insert Chunk* button on the toolbar or by pressing *Ctrl+Alt+I*.
+
+When you save the notebook, an HTML file containing the code and output will be saved alongside it (click the *Preview* button or press *Ctrl+Shift+K* to preview the HTML file).
+
+The preview shows you a rendered HTML copy of the contents of the editor. Consequently, unlike *Knit*, *Preview* does not run any R code chunks. Instead, the output of the chunk when it was last run in the editor is displayed.

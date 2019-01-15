@@ -1,0 +1,89 @@
+---
+title: "R Notebook"
+output: html_notebook
+---
+
+This is an [R Markdown](http://rmarkdown.rstudio.com) Notebook. When you execute code within the notebook, the results appear beneath the code. 
+
+Try executing this chunk by clicking the *Run* button within the chunk or by placing your cursor inside it and pressing *Ctrl+Shift+Enter*. 
+
+```{r}
+# Obtain data by reading the file death rate.csv and save it to df. Simply analyze the data, get the total number of shared data, whether there are missing values or outliers. If there is such data, remove the data; For example, its value range is 0<q<=1. [Note: The mortality rate in 1-6 questions only considers the male mortality rate.]
+df <- read.csv("C:/Users/Jimei/Desktop/death rate.csv")
+head(df)
+nrow(df)
+which(is.na(df),arr.ind = T)
+df <- na.omit(df)
+which(df$q_female>1|df$q_female<=0|df$q_male>1|df$q_male<=0)
+library(sqldf)
+df<-sqldf("select * from df where q_female<=1 and q_female>0 and q_male<=1 and q_male>0")
+head(df)
+
+# A scatter plot is drawn to show the relationship between age, year and male mortality (logarithm is log).
+plot(df$Age, df$q_male,log = "y")
+
+# A scatter plot of age and logarithm survival is plotted and the relationship between the two quantities is analyzed.
+plot(df$Age, df$L_female_exp)
+plot(df$Age, df$L_male_exp)
+# There exists a negative relationship between age and survivors,In other words, as people grow older, the number of survivors declines, and vice versa.
+
+# Draw a histogram to see the distribution of male deaths.
+hist(df$Male_Exp)
+
+# A histogram of the number of male deaths (the logarithm of Male_death) is plotted to observe the distribution of the number of male deaths in men.
+hist(df$L_male_exp)
+
+# Calculate the correlation coefficient of each variable of df and draw the correlation graph. [with corrgram package]
+library(corrgram) 
+corrgram(df, order=TRUE, lower.panel=panel.shade, upper.panel=panel.pie,diag.panel=panel.minmax, text.panel=panel.txt, main="Corrgram of df")
+# Lower triangle: The blue slash indicates that the two variables in the cell are positively correlated. A red slash indicates that the variable is negatively correlated. The darker the color, the greater the correlation of the variables. 
+# Upper triangle: The color function is the same as above, but the correlation size is shown by the size  of the filled pie slice. The positive correlation will fill the pie chart clockwise from 12 o'clock, while the negative phase fills the pie chart counterclockwise.
+# The main diagonal panel contains the minimum and maximum values for the variables.
+
+# The data is saved to the houseIndex by reading the file House-handle.csv.
+houseIndex <- read.csv("C:/Users/Jimei/Desktop/House-handle.csv")
+head(houseIndex)
+
+
+# Data exploration, draw a chart to show the changes in HPI from 1990 to 2011, the horizontal axis is time (can be the first column of data), and the vertical axis is the HPI value
+library("lubridate")
+houseIndex$date<-dmy(houseIndex$date)
+plot(houseIndex$date, houseIndex$index)
+
+
+# Draw a graph showing the amount of HPI growth per month, expressed as delta, with reference lines added at 0. [Note: The amount of growth can be calculated by subtracting one from the next; the HPI value of the previous item in the first article can be considered as 1]
+houseIndex <- within(houseIndex,{
+delta <- NA
+delta[1] <- index[1]-1
+delta[2:nrow(houseIndex)] <-diff(index)
+})
+plot(houseIndex$date,houseIndex$delta,ylim=c(-0.05,0.05))
+abline(h=0.0,lwd=1.5,lty=2)
+
+# To further understand the fluctuations in HPI, calculate its monthly growth rate. When drawing, the month with a positive growth rate is represented by a plus sign ("+") and negative ("o").
+houseIndex <- within(houseIndex,{
+rate <- NA
+rate <- delta/index
+})
+houseIndex
+categ<- factor(houseIndex$rate, levels =c(1,2,3), labels = c(1,2,3) )
+categ[houseIndex$rate>=0]<-3
+categ[houseIndex$rate<0]<-1
+str(categ)
+plot(houseIndex$date,houseIndex$rate,ylim=c(-0.04,0.04),pch=as.numeric(categ))
+
+# A table is established for the HPI growth rate, where each row represents a month, and each column represents a year, showing the data for the previous four years (the HPI growth rate is rounded to 4 decimal places); and plots the average annual growth rate and HPI of an HPI. Average monthly growth rate (annual growth rate (column average) and monthly growth rate (row average) for all years). 6. Draw a box plot to see the distribution of HPI growth rates.
+newhouse<-subset( houseIndex,select = c("month" , "year", "rate"))
+newtable <- xtabs(newhouse$rate~ newhouse$month + newhouse$year, data=newhouse)
+round(newtable[,1:4],4)
+plot(colMeans(newtable))
+plot(rowMeans(newtable))
+# Draw a box plot to see the distribution of HPI growth rates
+boxplot(houseIndex$delta)
+```
+
+Add a new chunk by clicking the *Insert Chunk* button on the toolbar or by pressing *Ctrl+Alt+I*.
+
+When you save the notebook, an HTML file containing the code and output will be saved alongside it (click the *Preview* button or press *Ctrl+Shift+K* to preview the HTML file).
+
+The preview shows you a rendered HTML copy of the contents of the editor. Consequently, unlike *Knit*, *Preview* does not run any R code chunks. Instead, the output of the chunk when it was last run in the editor is displayed.
