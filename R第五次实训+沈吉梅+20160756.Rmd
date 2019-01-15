@@ -1,0 +1,111 @@
+---
+title: "R Notebook"
+output: html_notebook
+---
+
+This is an [R Markdown](http://rmarkdown.rstudio.com) Notebook. When you execute code within the notebook, the results appear beneath the code. 
+
+Try executing this chunk by clicking the *Run* button within the chunk or by placing your cursor inside it and pressing *Ctrl+Shift+Enter*. 
+
+```{r echo=TRUE, message=FALSE, warning=FALSE, paged.print=TRUE}
+# Data processing [only use SY-20150401.csv]
+# Statistics every 5 minutes, the flow rate of the inbound and outbound stations of each station (Note: 00:00:01 in the first 5 minutes, 00:10:13 in the third 5 minutes), due to the possibility of taking the subway multiple times a day, according to Card number and pit stop time, query the time of the last outbound as the time of this outbound. Reference function lubridate::hms,lubridate:: period_to_seconds. The final result of the processing: dataframe (name trade.metro.in.out)
+df <- read.csv("C:/Users/Jimei/Desktop/SY-20150401.csv",header=FALSE)
+library(reshape)
+df<-rename(df,c(V1="card_id",V2="date",V3="time",V4="station",V5="vehicle",V6="money",V7="property"))
+library(lubridate)
+df$seconds<-period_to_seconds(hms(df$time))
+df<-df[order(df$card_id,df$seconds),] # In order to check the time of the last outbound as the time of this outbound
+df$minutes<-(df$seconds%/%300+1)
+df$line<-substring(df$station,1,3) # The first to third characters are lines
+df$station<-substring(df$station,4,nchar(as.character(df$station))) # The fourth to the ending characters are stations
+# Remove outliers
+library(dplyr)
+counts<-count(df,card_id)
+counts<-data.frame(counts[1],counts[2])
+library(sqldf)
+outliers<-sqldf("select card_id,n from counts where n%2=1")
+df<-sqldf("select * from df where card_id != (select card_id from outliers) ")
+head(df,10)
+```
+
+```{r echo=TRUE, message=FALSE, warning=FALSE, paged.print=TRUE}
+card.id <- c()
+time.in <- c()
+line.in <- c()
+station.in <- c()
+M5.in <- c()
+time.out <- c()
+line.out <- c()
+station.out <- c()
+money <- c()
+M5.out <- c()
+duration <- c()
+for(i in 1:dim(df)[1]){
+  if(i%%2 == 1){
+    if(df[i,]$money == 0){
+      card.id[length(card.id)+1] <- df$card_id[i]
+      time.in[length(time.in)+1] <- as.character(df$time[i])
+      line.in[length(line.in)+1] <- as.character(df$line[i])
+      station.in[length(station.in)+1] <- as.character(df$station[i])
+      M5.in[length(M5.in)+1] <- as.character(df$minutes[i])
+      time.out[length(time.out)+1] <- as.character(df$time[i+1])
+      line.out[length(line.out)+1] <- as.character(df$line[i+1])
+      station.out[length(station.out)+1]<-as.character(df$station[i+1])
+      money[length(money)+1]<-as.character(df$money[i+1])
+      M5.out[length(M5.out)+1]<-as.character(df$minutes[i+1])
+      duration[length(duration)+1]<-as.character((df$seconds[i+1]-df$seconds[i]))
+    }
+  }
+}
+# I struggled to replace the for loop with other functions (such as within) but failed.
+trade.metro.in.out<-data.frame(card.id=card.id,time.in=time.in,line.in=line.in,station.in=station.in,M5.in=M5.in,time.out=time.out,line.out=line.out,station.out=station.out,money=money,M5.out=M5.out,duration=duration)
+head(trade.metro.in.out,10)
+write.csv(trade.metro.in.out,file="C:/Users/Jimei/Desktop/shmetro_line_in_out.csv")
+
+```
+
+```{r echo=TRUE, message=FALSE, warning=FALSE}
+count2 =
+  trade.metro.in.out %>% 
+  group_by(station.in) %>% 
+  count %>% 
+  ungroup
+count2 %>% nrow
+count2
+```
+
+```{r echo=TRUE, message=FALSE, warning=FALSE}
+count3 =
+  trade.metro.in.out %>% 
+  group_by(station.out) %>% 
+  count %>% 
+  ungroup
+count3 %>% nrow
+count3
+```
+
+```{r echo=TRUE, message=FALSE, warning=FALSE}
+stations_count<-data.frame(count2[1],count2[2]+count3[2])
+stations_count<-stations_count[-3]
+stations_count<-stations_count[order(-stations_count$n),]
+stations_count
+```
+
+```{r echo=TRUE, message=FALSE, warning=FALSE}
+library(ggplot2) 
+graph_stations_count <- stations_count[1:10,]
+p<-ggplot(data = graph_stations_count, aes(x=station.in,y=n,fill=station.in)) 
+p<-p+geom_bar( stat="identity",position=position_dodge(0.8),width = 0.4)
+p<-p+labs(x="station",y="count") 
+p<-p+geom_text(label=paste(graph_stations_count$n) ,colour = "blue", vjust=-1) 
+p<-p+scale_y_continuous(limits=c(0, max(graph_stations_count$n) * 1.05)) 
+p<-p+theme(legend.title=element_blank())
+p
+```
+
+Add a new chunk by clicking the *Insert Chunk* button on the toolbar or by pressing *Ctrl+Alt+I*.
+
+When you save the notebook, an HTML file containing the code and output will be saved alongside it (click the *Preview* button or press *Ctrl+Shift+K* to preview the HTML file).
+
+The preview shows you a rendered HTML copy of the contents of the editor. Consequently, unlike *Knit*, *Preview* does not run any R code chunks. Instead, the output of the chunk when it was last run in the editor is displayed.
