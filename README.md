@@ -1,81 +1,81 @@
-# R语言学习及实验
-## 实验一 
-### 1.1 基本数据结构练习要求: 
-（1）创建数值从1到10，间隔为2，名称为A的向量 
-（2）将数字1到12每个重复3次写入向量B中：(1,1,1，…,12,12,12) 提示rep函数 
-（3）输出B向量的长度和去重后的向量数值 
-（4）输出A、B的交集，并集C ，差集 
-（5）将集合C按降序排序 
-（6）选取C的第3个元素；第4到最后的元素；数值在区间大于等于3小于7的元素 
-（7）将数值型向量C转化为字符型 
-（8）向量C的长度，最大值及其索引 
-（9）将A转化成数组类型变量名为a,查看a的类型 
-（10）用1-20的数字构成两个4×5的矩阵，其中M1为按列输入，M2为按行输入， 计算M3为M1+M2；并构建M4，它由M3各列构成，但不包含第3列
-（11）用1-9的数字构成一个3×3的按列输入的矩阵M5；求M5的对角阵M6；
-（12）计算M5与M6的矩阵乘法得到M7；求M7的转置矩阵M8 （12）用1~12的数字构成一个4×3的按列输入的矩阵M9，求M9的列加和；求M9的行平均
-### 1.2 数据的导入和处理对象常用函数练习要求： 
-（1）从csv文件中读取algae数据集赋值给algae1 
-（2）查看algae1的前10条数据 
-（3）输出algae1的基本统计信息，数据的维度，特征名称，查看season、size和NO3各列的数据类型 
-（4）选出季节为夏天的样本存在newalgael，输出newalgael样本行数 
-（5）将newalgael的列cl中的缺失值用本列得中位数填充 
-（6）将algae1删除含有缺失值的样本，输出原始样本的行数和剩余样本行数 
-（7）编辑algae1并另存为algae2（任意修改某个点的值）
-（8）将algae1和algae2，按行合并得到algae3，输出algae1、algae2 和algae3的样本行数
+# R language learning and experiment
+## Experiment one 
+### 1.1 Basic data structure exercise requirements:
+(1) Create a vector with a value from 1 to 10, an interval of 2, and a name of A
+(2) Write the numbers 1 to 12 three times each into vector B: (1,1,1, ..., 12,12,12) prompt the rep function
+(3) Output the length of the B vector and the vector value after deduplication
+(4) Output the intersection of A, B, union C, difference
+(5) Sort set C in descending order
+(6) Select the third element of C; the fourth to the last element; the element whose value is greater than or equal to 3 and less than 7
+(7) Convert the numeric vector C to a character
+(8) Length, maximum value and index of vector C
+(9) Convert A into an array type variable named a, check the type of a
+(10) Use the numbers from 1-20 to form two 4 × 5 matrices, where M1 is input by column, M2 is input by row, calculate M3 as M1 + M2; and build M4, which consists of M3 columns, but Does not include column 3
+(11) Use a number from 1-9 to form a 3 × 3 matrix input by column M5; find the diagonal matrix M6 of M5;
+(12) Calculate the matrix multiplication of M5 and M6 to obtain M7; find the transposed matrix M8 of M7 (12) use a number from 1 to 12 to form a 4 × 3 matrix input by column M9, find the column sum of M9; Row average of M9
+### 1.2 Data import and processing object Common function practice requirements:
+(1) Read the algae dataset from the csv file and assign it to algae1
+(2) View the first 10 data of algae1
+(3) Output basic statistical information of algae1, data dimensions, feature names, and view the data types of season, size, and NO3 columns
+(4) Newalgael is selected for the sample whose season is summer, and the number of newalgael sample rows is output.
+(5) Fill the missing value in column cl of newalgael with the median of this column
+(6) Delete algae1 for samples with missing values, and output the number of rows in the original sample and the number of rows in the remaining samples.
+(7) Edit algae1 and save it as algae2 (arbitrarily modify the value of a point)
+(8) Combine algae1 and algae2 by line to get algae3, and output the number of sample rows of algae1, algae2, and algae3
 
-## 实验二
-### 2.1 练习要求: 
-（1） 将item_feature1.csv读入，存储到df中；并给df的列分别命名为：date、item_id、cate_id、cate_level_id、brand_id、supplier_id、pv_ipv、cart_uv、collect_uv和cart_ipv。注：【日期、商品id、仓库id、仓库级别id、品牌id、供应商id、浏览次数、加购人次、收藏人次和被加购次数】
-（2）为df中的cart_uv 重新编码并将新变量命名为recode，将小于5000的归为less,将 大于等于5000小于15000的归为common,其他的归为many；查看尾部的10条数 据。 
-（3）查看df中是否有缺失值；如有缺失值，删除df中所有含缺失值的行。
-（4）将df中的date字段转换成日期类型，如：2015-02-13。 
-（5）将df按照date字段升序排列，另存为df_asc；并查看前10条数据。
-（6）将df按照date字段升序和item_id降序排序，另存在df1中；并查看前5条数据
-### 2.2 练习要求: 
-（1）从df中选取date、item_id、cate_id、cart_uv、recode、collect_uv和cart_ipv字段另存为df1；剔除df1中的cart_ipv字段另存为df2；从df1中选取item_id 大于500的 并且recode为less的数据另存为df3。
-（2）从df中选取date为2015-02-14，item_id为300，并保留date到supplier_id其间的所 有列，另存为df_sub。 
-（3）从df中无放回的随机抽取500条样本，另存为df4；查看样本的维度和数据的头部数据。
-（4）从df1中选取列从item_id到cate_id的数据，另存为df1_temp,然后与df按照item_id合 并存为df5。
-（5）从df1中利用sql的方法选取item_id为300的数据，另存为df6中。【注：sqldf包】
-（6）从df2中有放回的随机取出与df6一样多的数据条数做为df_tem，然后与df6按列（横向） 合并，另存为df7。 
-（7）从df中选取date 、 item_id 、 cate_id 和cart_ipv 另存为feature，并将feature 按日 期升序排列，取出feature 中唯一的cate_id 【去重即可】。
+## Experiment two
+### 2.1 Practice Requirements:
+(1) Read item_feature1.csv into df; and name the columns of df as: date, item_id, cate_id, cate_level_id, brand_id, supplier_id, pv_ipv, cart_uv, collect_uv, and cart_ipv. Note: [date, product id, warehouse id, warehouse level id, brand id, supplier id, number of visits, purchases, collectors and purchases]
+(2) Re-encode cart_uv in df and name the new variable recode, classify less than 5000 as less, classify 5000 or more and less than 15000 as common, and others as many; check the last 10 data.
+(3) Check whether there are missing values ​​in df; if there are missing values, delete all rows with missing values ​​in df.
+(4) Convert the date field in df to a date type, such as: 2015-02-13.
+(5) Sort df in ascending order of the date field and save it as df_asc; and view the first 10 data.
+(6) Sort df in ascending order of date field and descending order of item_id, and save it in df1; and view the first 5 data
+### 2.2 Practice Requirements:
+(1) Select the date, item_id, cate_id, cart_uv, recode, collect_uv, and cart_ipv fields from df and save as df1; remove the cart_ipv field from df1 and save as df2; select from df1 and save the data with item_id greater than 500 and recode as less For df3.
+(2) Select df as 2015-02-14, item_id as 300, and save all columns between date and supplier_id, and save as df_sub.
+(3) 500 samples are randomly drawn from df without replacement and saved as df4; check the dimensions of the samples and the head data of the data.
+(4) Select the data from item_id to cate_id from df1, save it as df1_temp, and merge with df according to item_id and save it as df5.
+(5) Use sql method from df1 to select data with item_id of 300 and save it as df6. [Note: sqldf package]
+(6) Randomly retrieve as many data items as df6 from df2 as df_tem, then merge with df6 in columns (horizontal) and save as df7.
+(7) Select date, item_id, cate_id and cart_ipv from df and save as feature, and arrange the features in ascending order by date, and take out the only cate_id in the feature.
 
-## 实验三
-### 3.1 练习要求: 
-（1）通过读取文件death rate.csv获取数据保存到df中，简单分析数据，获取共 有数据多少条，是否有缺失值或是异常值,若存在这样的数据，将这些数据剔 除;对于死亡率来说，它的值域是0<q<=1。【注：1-6题中的死亡率，只考虑男性的死亡率】
-（2）绘制散点图，分别展示年龄、年份与男性的死亡率（对数即取log）的关系。
-（3）绘制年龄与对数生存人数的散点图，分析这2个量的关系。
-（4）绘制直方图来观察一下男性死亡人数的分布。
-（5）绘制男性的对数死亡人数即（Male_death 的对数）的直方图，来观察男 性的对数死亡人口数的分布情况。
-（6）计算df的各变量的相关系数，并画出相关图。【用corrgram包】
+## Experiment three
+### 3.1 Practice Requirements:
+(1) Obtain the data by reading the file death rate.csv and save it to df. Simply analyze the data to obtain how many pieces of data are there, and whether there are missing values ​​or outliers. If there is such data, remove these data; for death Probably, its value range is 0 <q <= 1. [Note: The mortality in Questions 1-6, only consider male mortality]
+(2) Draw a scatter plot to show the relationship between age, year and male mortality (logarithm is log).
+(3) Draw a scatter plot of age and logarithmic survival, and analyze the relationship between the two quantities.
+(4) Draw a histogram to observe the distribution of male deaths.
+(5) Draw a histogram of the number of male logarithmic deaths (Log of Male_death) to observe the distribution of male logarithmic deaths.
+(6) Calculate the correlation coefficient of each variable of df and draw the correlation diagram. [With corrgram package]
 
-### 3.2 练习要求:
-（1） 通过读取文件House-handle.csv获取数据保存到houseIndex中。
-（2）数据探索，绘制一张图表来展示1990到2011年的HPI的变化情况，横轴是时间 （可以是数据的第一列），纵轴是HPI值。
-（3）绘制一张图，展示每个月的HPI的增长量，表示为delta,在0的位置添加参考线。【注：增长量，可以用下一条减上一条来计算；第一条的上一条的HPI值可以认为 是1】
-（4）为了进一步了解HPI的波动，计算其每个月的增长率。绘图时，增长率为正数的 月份由加号（“+”）表示，为负的用（“o”）表示。
-（5）对HPI增长率建立表格，其中每一行代表一个月份，每一列代表一个年份，显示 前四年的数据（ HPI增长率舍入到小数点后4位）；并绘制一个HPI的平均年增长率 和HPI的平均月增长率（全部年份的年增长率（列平均）和月增长率（行平均））。
-（6）绘制一个箱线图，来查看HPI的增长率的分布情况。
+### 3.2 Practice Requirements:
+(1) Get the data by reading the file House-handle.csv and save it to houseIndex.
+(2) Data exploration, draw a chart to show the change of HPI from 1990 to 2011. The horizontal axis is time (may be the first column of the data), and the vertical axis is the HPI value.
+(3) Draw a graph showing the increase in HPI for each month, expressed as delta, and add a reference line at the position of 0. [Note: The amount of increase can be calculated by subtracting the next one from the previous one; the HPI value of the first one from the previous one can be considered as 1]
+(4) In order to further understand the fluctuation of HPI, calculate its monthly growth rate. When plotting, months with a positive growth rate are represented by a plus sign ("+") and negative ones ("o").
+(5) Establish a table for the growth rate of HPI, where each row represents a month and each column represents a year, showing the data of the previous four years (HPI growth rate is rounded to four decimal places); and an average annual growth rate of HPI is plotted Rate and average monthly growth rate of HPI (annual growth rate (column average) and monthly growth rate (row average) for all years).
+(6) Draw a box chart to see the distribution of the growth rate of HPI.
 
-## 实验四
-### 4.1 题目一要求
-（1）通过读取“hospital-data.csv”将数据保存到df中，获取该数据的条数；查看 数据中的前5条数据。
-（2）查看数据概况；求得邮编的范围。
-（3）我们默认电话号码是个数值，没有实际意义；应用sapply函数，通过调用用户 自定义函数，返回电话号码的最大值，最小值，均值，中位数，标准差和方差。
-（4）利用aggregate求取各州的电话号码的中位数。
-（5）利用by求取各城市的电话号码的最大值和最小值；显示结果的前3条数据。 
-（6）对所属州生成简单的频数统计表；并将这个频数表转化为比例值。
-（7）建立所属州和医院类型的二维列联表，命名为mycontable；按列生成边际和。
-（8）利用CrossTable建立所属乡镇和是否提供急救服务字段的二维列联表，命名为 mycrosstable。（注：安装gmodels包)
-### 4.2 题目二要求
-（1）通过读取文件death rate.csv获取数据保存到death中, 通过卡方检验来检 验年龄与男性生存人口数（二级列联表）之间是否独立。
-（2）通过assocstats函数来度量年龄与男性的死亡率（二级列联表）之间的相 关性。
-（3）计算年龄与男性的死亡率之间的Pearson和Spearman相关系数;和death中 所有变量的协方差。 
-（4）检验女性生存人口数和男性生存人口数之间的相关性的显著性
+## Experiment four
+### 4.1 Question One Requirements
+(1) Save the data to df by reading “hospital-data.csv” to get the number of the data; check the first 5 data in the data.
+(2) View the data overview; find the range of postal codes.
+(3) Our default phone number is a numerical value, which has no practical meaning. The sapply function is used to return the maximum, minimum, mean, median, standard deviation, and variance of the phone number by calling a user-defined function.
+(4) Use aggregate to find the median of telephone numbers in each state.
+(5) Use by to find the maximum and minimum values ​​of the phone numbers in each city; display the first three data of the results.
+(6) Generate a simple frequency table for the state; and convert this frequency table into a proportional value.
+(7) Establish a two-dimensional contingency table of the state and hospital type, and name it mycontable; generate marginal sums by column.
+(8) Use CrossTable to establish a two-dimensional contingency table of the townships to which they belong and whether or not to provide emergency services, named mycrosstable. (Note: Install the gmodels package)
+### 4.2 Question Two Requirements
+(1) The data obtained by reading the file death rate.csv is stored in the death, and the chi-square test is used to test whether the age is independent of the male survival population (second-level contingency table).
+(2) Measure the correlation between age and male mortality (secondary contingency table) through the assocstats function.
+(3) Calculate the Pearson and Spearman correlation coefficients between age and male mortality; and the covariance of all variables in death.
+(4) Test the significance of the correlation between the female surviving population and the male surviving population
 
-## 实验五
-### 5.1 题目一要求
-数据处理【只用SY-20150401.csv】统计每5分钟，各站点的进出站流量（说明：00:00:01在第一个5分钟内，00:10:13在第三个5分 钟内），由于一天可能多次乘坐地铁，根据卡号和进站时间，查询最近出站的时间，作为本次出 站时间。参考函数lubridate::hms，lubridate:: period_to_seconds。 、
-处理的最终结果：dataframe(名称trade.metro.in.out)
-### 5.2 题目二要求
-通过题目1中的dataframe（trade.metro.in.out）进行统计，统计进 站与出站之间的流量；然后选取流量最大的前10个站点，在Notebook中查看前6条。
+## Experiment five
+### 5.1 Question One Requirements
+Data processing [only use SY-20150401.csv] statistics of inbound and outbound traffic of each station every 5 minutes (Note: 00:00:01 in the first 5 minutes, 00:10:13 in the third 5 minutes ), Because you may take the subway multiple times a day, according to the card number and the arrival time, query the time of the most recent departure as the current departure time. See the functions lubridate :: hms and lubridate :: period_to_seconds. ,
+The final result of the processing: dataframe (name trade.metro.in.out)
+### 5.2 Question 2 Requirements
+Use the dataframe (trade.metro.in.out) in question 1 to make statistics, and count the traffic between inbound and outbound; then select the top 10 sites with the largest traffic and view the top 6 in Notebook.
